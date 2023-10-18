@@ -1,0 +1,91 @@
+name: Run experiment for finding most frequently modified functions
+
+on:
+  workflow_dispatch:
+    inputs:
+      topn:
+        description: "The number of top frequently modified functions to return"
+        type: number
+        default: 10
+      lang:
+        description: "The main programming language used in the target repo"
+        type: string
+        default: "python"
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      topn: "${{ github.event.inputs.topn }}"
+      lang: "${{ github.event.inputs.lang }}"
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - run: |
+          pip install -r requirements.txt
+
+  frequency_analysis:
+    needs:
+      - setup
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:      
+      - name: Checkout github repo
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Find frequently modified functions
+        run: |
+          curr_dir=`pwd`
+          mkdir -p $outputdir 
+          python get_freq_modified_fns.py \
+            --path $curr_dir \
+            --topn ${{ needs.setup.outputs.topn }} \
+
+      - name: Zip up results
+        run: |
+          zip -r results.zip results
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: results
+          path: "results.zip"
+
+  generate-report:
+    needs:
+      - combine_output
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Download artifacts for this run
+        uses: actions/download-artifact@v3
+        with:
+          name: results-all
+          path: results
+
+      - name: Generate report
+        run: |
+          cd results
+          unzip results.zip
+          cd ..
+          python ${GITHUB_WORKSPACE}/benchmark/parse_results.py --outputdir results/results > $GITHUB_STEP_SUMMARY
