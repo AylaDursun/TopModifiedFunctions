@@ -1,7 +1,6 @@
 from pydriller import Repository
 from argparse import ArgumentParser
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json
 from datetime import datetime
 import pytz
 
