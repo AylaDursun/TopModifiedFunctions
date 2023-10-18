@@ -3,8 +3,8 @@ from argparse import ArgumentParser
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from datetime import datetime
+import pytz
 
-@dataclass_json
 @dataclass
 class ModifiedFunction:
     name: str
@@ -19,10 +19,13 @@ def main():
     args = parser.parse_args()
 
     modified_functions = {}
+    utc = pytz.UTC
 
     commits = Repository(args.path, only_in_branch='main',only_modifications_with_file_types=['.py','.js','.java','.ts']).traverse_commits()
-    start_date = datetime.today()
-    end_date = datetime(1000, 1, 1)
+    commits = list(commits)
+
+    start_date = datetime.today().replace(tzinfo=utc)
+    end_date = datetime(1000, 1, 1).replace(tzinfo=utc)
 
     for commit in commits:
         for modified_file in commit.modified_files:
@@ -30,10 +33,10 @@ def main():
             for changed_method in changed_methods:
                 method_path = f"{modified_file.new_path}#{changed_method.name}"
 
-                if commit.committer_date < start_date:
+                if commit.committer_date.replace(tzinfo=utc) < start_date:
                     start_date = commit.committer_date
                 
-                if commit.committer_date > end_date:
+                if commit.committer_date.replace(tzinfo=utc) > end_date:
                     end_date = commit.committer_date
 
                 if method_path not in modified_functions.keys():
@@ -47,13 +50,18 @@ def main():
 
     print("## Top modified functions in this repo")
 
-    print(f"The repo has {len(list(commits))} commits and a total of {len(modified_functions)} modified functions")
+
+
+
+    print(f"The repo has {len(commits)} commits and a total of {len(modified_functions)} modified functions\n")
+   
     print(f"Top {args.topn} modified functions:\n")
 
     print(f"| Function | # commits | Date Range |") 
     print(f"| --- | --: | --: |")
     for function in sorted_modified_functions[:10]:
-        print(f"| {function[0]} | {function[1].num_commits} | {function[1].first_commit_date.strftime('%d/%m/%Y')} - {function[1].last_commit_date.strftime('%d/%m/%Y')} |")
+        # show date as Oct 12 2021 - Oct 13 2021
+        print(f"| `{function[0]}` | {function[1].num_commits} | {function[1].first_commit_date.strftime('%B %d, %Y')} - {function[1].last_commit_date.strftime('%B %d, %Y')} |")
 
 if __name__ == "__main__":
     main()
