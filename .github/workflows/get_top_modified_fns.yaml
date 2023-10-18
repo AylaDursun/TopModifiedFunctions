@@ -46,4 +46,3 @@ jobs:
           python get_freq_modified_fns.py \
             --path $curr_dir \
             --topn ${{ needs.setup.outputs.topn }} 
- 
