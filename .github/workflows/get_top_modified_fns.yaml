@@ -41,7 +41,6 @@ jobs:
 
       - name: Find frequently modified functions
         run: |
-          curr_dir=`pwd`
           python get_freq_modified_fns.py \
-            --path $curr_dir \
+            --path . \
             --topn ${{ needs.setup.outputs.topn }} 
