@@ -1,0 +1,17 @@
+name: Test action
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Integration test 1
+        uses: ./
+        with:
+          topn: 0
