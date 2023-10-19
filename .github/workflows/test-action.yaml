@@ -17,3 +17,4 @@ jobs:
         uses: ./
         with:
           topn: 5
+          mainbranch: main

@@ -15,12 +15,13 @@ def main():
     parser = ArgumentParser()
     parser.add_argument('--path', help='path to the repository', type=str, required=True)
     parser.add_argument('--topn', help='number of top modified functions to show', type=int, default=10)
+    parser.add_argument('--mainbranch', help='name of main branch that will be analyzed', type=str, default="main")
     args = parser.parse_args()
 
     modified_functions = {}
     utc = pytz.UTC
 
-    commits = Repository(args.path, only_in_branch='main',only_modifications_with_file_types=['.py','.js','.java','.ts']).traverse_commits()
+    commits = Repository(args.path, only_in_branch=args.mainbranch,only_modifications_with_file_types=['.py','.js','.java','.ts']).traverse_commits()
     commits = list(commits)
 
     start_date = datetime.today().replace(tzinfo=utc)
