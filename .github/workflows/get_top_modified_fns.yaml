@@ -35,6 +35,8 @@ jobs:
     steps:      
       - name: Checkout github repo
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # fetch all history so we can parse it (normally not needed if you care about analyzing repo at a certain point)
 
       - uses: actions/setup-python@v4
         with:
