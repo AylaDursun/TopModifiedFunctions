@@ -32,8 +32,5 @@ runs:
       shell: bash
 
     - name: Find frequently modified functions
-      run: python "${{ github.action_path }}/get_freq_modified_fns.py" \
-          --path . \
-          --topn ${{ inputs.topn }}  \
-          --mainbranch ${{ inputs.mainbranch }} >> $GITHUB_STEP_SUMMARY
+      run: python "${{ github.action_path }}/get_freq_modified_fns.py" --path . --topn ${{ inputs.topn }} --mainbranch ${{ inputs.mainbranch }} >> $GITHUB_STEP_SUMMARY
       shell: bash
