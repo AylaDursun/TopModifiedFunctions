@@ -15,6 +15,9 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+      
     - name: Checkout out code
       uses: actions/checkout@v3
 
