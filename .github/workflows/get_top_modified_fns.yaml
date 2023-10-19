@@ -54,4 +54,5 @@ jobs:
         run: |
           python get_freq_modified_fns.py \
             --path . \
-            --topn ${{ needs.setup.outputs.topn }} 
+            --topn ${{ needs.setup.outputs.topn }}  \
+            > $GITHUB_STEP_SUMMARY
