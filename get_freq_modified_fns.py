@@ -50,15 +50,13 @@ def main():
     print("## Top modified functions in this repo")
 
 
-
-
     print(f"The repo has {len(commits)} commits and a total of {len(modified_functions)} modified functions\n")
    
     print(f"Top {args.topn} modified functions:\n")
 
     print(f"| Function | # commits | Date Range |") 
     print(f"| --- | --: | --: |")
-    for function in sorted_modified_functions[:10]:
+    for function in sorted_modified_functions[:args.topn]:
         # show date as Oct 12 2021 - Oct 13 2021
         print(f"| `{function[0]}` | {function[1].num_commits} | {function[1].first_commit_date.strftime('%B %d, %Y')} - {function[1].last_commit_date.strftime('%B %d, %Y')} |")
 
