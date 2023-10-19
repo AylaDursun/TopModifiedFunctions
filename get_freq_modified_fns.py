@@ -50,7 +50,8 @@ def main():
     print("## Top modified functions in this repo")
 
 
-    print(f"The repo has {len(commits)} commits and a total of {len(modified_functions)} modified functions\n")
+    print(f"The repo has {len(commits)} commits that modified source code files.")
+    print(f"These commits have a total of {len(modified_functions)} unique modified functions\n")
    
     print(f"Top {args.topn} modified functions:\n")
 
