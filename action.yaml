@@ -2,59 +2,30 @@ name: Find most frequently modified functions
 author: Sarah Nadi
 description: Display the most frequently modified functions, which can provide insights to prioritize testing and refactoring efforts.
 
-on:
-  workflow_dispatch:
-    inputs:
-      topn:
-        description: "The number of top frequently modified functions to return"
-        type: number
-        default: 10
+branding:
+  icon: info
+  color: yellow
 
-      debug_enabled:
-        type: boolean
-        description: "Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)"
-        default: false
-jobs:
-  setup:
-    runs-on: ubuntu-latest
-    outputs:
-      topn: "${{ github.event.inputs.topn }}"
-    steps:
-      - uses: actions/checkout@v3
+inputs:
+  topn:
+    description: "The number of top frequently modified functions to return"
+    type: number
+    default: 10
 
-      - uses: actions/setup-python@v4
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout out code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+    - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+    
+    - name: Install dependencies
+    - run: |
+        pip install -r requirements.txt
 
-      - run: |
-          pip install -r requirements.txt
-
-  frequency_analysis:
-    needs:
-      - setup
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:      
-      - name: Checkout github repo
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0 # fetch all history so we can parse it (normally not needed if you care about analyzing repo at a certain point)
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-      
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
-
-      - name: Find frequently modified functions
-        run: |
-          python get_freq_modified_fns.py \
-            --path . \
-            --topn ${{ needs.setup.outputs.topn }}  \
-            > $GITHUB_STEP_SUMMARY
+    - name: Find frequently modified functions
+      run: python get_freq_modified_fns.py --path . --topn ${{ inputs.topn }} >> $GITHUB_STEP_SUMMARY
