@@ -1,8 +1,6 @@
 name: Find most frequently modified functions
 author: Sarah Nadi
-description: |
-  This action finds the most frequently modified functions in a repository's commit history.
-  This info may be useful to understand how to prioritize testing and refactoring efforts.
+description: Display the most frequently modified functions, which can provide insights to prioritize testing and refactoring efforts.
 
 on:
   workflow_dispatch:
