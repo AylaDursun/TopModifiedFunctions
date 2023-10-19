@@ -20,12 +20,11 @@ runs:
 
     - name: Set up Python
     - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+      with:
+        python-version: '3.10'
     
     - name: Install dependencies
-    - run: |
-        pip install -r requirements.txt
+    - run: pip install -r requirements.txt
 
     - name: Find frequently modified functions
       run: python get_freq_modified_fns.py --path . --topn ${{ inputs.topn }} >> $GITHUB_STEP_SUMMARY
