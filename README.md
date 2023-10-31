@@ -33,13 +33,15 @@ Top 10 modified functions:
 In your `.github/workflows/workflow-name.yaml` file, use the following code:
 
 ```
+name: List top modified functions
+
 on:
   workflow_dispatch
   
 jobs:
   top-modified-fns:
     runs-on: ubuntu-latest
-    name: A job to list top modified functions
+    name: List top modified functions
     steps:
       - uses: actions/checkout@v4
         with:
