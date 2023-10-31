@@ -1,7 +1,7 @@
 from pydriller import Repository
 from argparse import ArgumentParser
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, date
 import pytz
 
 @dataclass
@@ -24,27 +24,22 @@ def main():
     commits = Repository(args.path, only_in_branch=args.mainbranch,only_modifications_with_file_types=['.py','.js','.java','.ts']).traverse_commits()
     commits = list(commits)
 
-    start_date = datetime.today().replace(tzinfo=utc)
-    end_date = datetime(1000, 1, 1).replace(tzinfo=utc)
-
     for commit in commits:
         for modified_file in commit.modified_files:
             changed_methods = modified_file.changed_methods
             for changed_method in changed_methods:
                 method_path = f"{modified_file.new_path}#{changed_method.name}"
 
-                if commit.committer_date.replace(tzinfo=utc) < start_date:
-                    start_date = commit.committer_date
-                
-                if commit.committer_date.replace(tzinfo=utc) > end_date:
-                    end_date = commit.committer_date
-
                 if method_path not in modified_functions.keys():
-                    modified_functions[method_path] = ModifiedFunction(name=changed_method.name, first_commit_date=start_date, last_commit_date=end_date, num_commits=1)
+                    modified_functions[method_path] = ModifiedFunction(name=changed_method.name, first_commit_date=commit.committer_date, last_commit_date=commit.committer_date, num_commits=1)
                 else:
                     modified_functions[method_path].num_commits += 1
-                    modified_functions[method_path].last_commit_date = end_date
-                    modified_functions[method_path].first_commit_date = start_date     
+
+                    if commit.committer_date < modified_functions[method_path].first_commit_date:
+                        modified_functions[method_path].first_commit_date = commit.committer_date
+
+                    if commit.committer_date > modified_functions[method_path].last_commit_date:
+                        modified_functions[method_path].last_commit_date = commit.commiter_date
 
     sorted_modified_functions = sorted(modified_functions.items(), key=lambda x: x[1].num_commits, reverse=True)
 
