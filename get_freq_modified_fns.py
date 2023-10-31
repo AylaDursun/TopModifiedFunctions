@@ -39,7 +39,7 @@ def main():
                         modified_functions[method_path].first_commit_date = commit.committer_date
 
                     if commit.committer_date > modified_functions[method_path].last_commit_date:
-                        modified_functions[method_path].last_commit_date = commit.commiter_date
+                        modified_functions[method_path].last_commit_date = commit.committer_date
 
     sorted_modified_functions = sorted(modified_functions.items(), key=lambda x: x[1].num_commits, reverse=True)
 
