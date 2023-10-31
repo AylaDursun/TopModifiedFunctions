@@ -59,6 +59,8 @@ Also, note that by default, this action assumes that the name of the branch to b
 through the `mainbranch` option. You can also change your workflow to be configurable so you can analyze different branches and/or display different number of top n functions without changing your workflow file:
 
 ```
+name: List top modified functions
+
 on:
   workflow_dispatch:
     inputs:
