@@ -1,8 +1,8 @@
 from pydriller import Repository
 from argparse import ArgumentParser
 from dataclasses import dataclass
-from datetime import datetime, date
-import pytz
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 @dataclass
 class ModifiedFunction:
@@ -16,12 +16,17 @@ def main():
     parser.add_argument('--path', help='path to the repository', type=str, required=True)
     parser.add_argument('--topn', help='number of top modified functions to show', type=int, default=10)
     parser.add_argument('--mainbranch', help='name of main branch that will be analyzed', type=str, default="main")
+    parser.add_argument('--lastyearonly', help='only analyze commits from the last year', default=False, action='store_true')
     args = parser.parse_args()
 
     modified_functions = {}
-    utc = pytz.UTC
 
-    commits = Repository(args.path, only_in_branch=args.mainbranch,only_modifications_with_file_types=['.py','.js','.java','.ts']).traverse_commits()
+    if args.lastyearonly:
+        date_limit = datetime.now() - relativedelta(years=1)
+    else:
+        date_limit = None
+
+    commits = Repository(args.path, since=date_limit, only_in_branch=args.mainbranch,only_modifications_with_file_types=['.py','.js','.java','.ts']).traverse_commits()
     commits = list(commits)
 
     for commit in commits:
