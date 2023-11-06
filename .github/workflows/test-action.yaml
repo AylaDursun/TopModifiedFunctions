@@ -18,3 +18,10 @@ jobs:
         with:
           topn: 5
           mainbranch: main
+
+      - name: Integration test 2
+        uses: ./
+        with:
+          topn: 10
+          mainbranch: main
+          lastyearonly: false

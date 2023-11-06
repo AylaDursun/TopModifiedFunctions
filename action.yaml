@@ -15,7 +15,8 @@ inputs:
     description: "The name of the main branch"
     type: string
     default: "main"
-  lastyearonly: "Flag to indicate whether to only consider commits from the last year"
+  lastyearonly: 
+    description: "Flag to indicate whether to only consider commits from the last year"
     type: boolean
     default: true
 
