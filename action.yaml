@@ -15,6 +15,9 @@ inputs:
     description: "The name of the main branch"
     type: string
     default: "main"
+  lastyearonly: "Flag to indicate whether to only consider commits from the last year"
+    type: boolean
+    default: true
 
 runs:
   using: "composite"
@@ -32,5 +35,10 @@ runs:
       shell: bash
 
     - name: Find frequently modified functions
-      run: python "${{ github.action_path }}/get_freq_modified_fns.py" --path . --topn ${{ inputs.topn }} --mainbranch ${{ inputs.mainbranch }} >> $GITHUB_STEP_SUMMARY
+      run:
+        if ${{ inputs.lastyearonly }}; then
+          python "${{ github.action_path }}/get_freq_modified_fns.py" --path . --topn ${{ inputs.topn }} --mainbranch ${{ inputs.mainbranch }} --lastyearonly >> $GITHUB_STEP_SUMMARY
+        else 
+          python "${{ github.action_path }}/get_freq_modified_fns.py" --path . --topn ${{ inputs.topn }} --mainbranch ${{ inputs.mainbranch }} >> $GITHUB_STEP_SUMMARY
+        fi
       shell: bash

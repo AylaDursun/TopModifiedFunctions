@@ -47,7 +47,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: get modified functions
-        uses: snadi/TopModifiedFunctions@v1.1
+        uses: snadi/TopModifiedFunctions@v1.2
         with:
           topn: 5
 ```
@@ -55,8 +55,8 @@ jobs:
 Note that the first step checks out the target github repo with all of its history (hence `fetch-depth: 0`).
 This is necessary for the `TopModifiedFunctions` action to work since it relies on analyzing the history of the current repo.
 
-Also, note that by default, this action assumes that the name of the branch to be analyzed is `main`. You can change that name
-through the `mainbranch` option. You can also change your workflow to be configurable so you can analyze different branches and/or display different number of top n functions without changing your workflow file:
+Also, note that by default, this action assumes that the name of the branch to be analyzed is `main` and it analyzes comimt history in the last year. You can change the branch name
+through the `mainbranch` option, and can disable the `lastyearonly` option. You can also change your workflow to be configurable so you can analyze different branches and/or display different number of top n functions without changing your workflow file:
 
 ```
 name: List top modified functions
@@ -72,6 +72,10 @@ on:
         description: "The name of the branch to analyze"
         type: string
         default: "master"
+      lastyearonly:
+        description: "Disable if you want to analyze the full history (takes longer)"
+        type: boolean
+        default: true
   
 jobs:
   top-modified-fns:
@@ -82,8 +86,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: get modified functions
-        uses: snadi/TopModifiedFunctions@v1.1
+        uses: snadi/TopModifiedFunctions@v1.2
         with:
           topn: "${{ github.event.inputs.topn }}"
           mainbranch: "${{ github.event.inputs.mainbranch }}"
+          lastyearonly: "${{ github.event.inputs.lastyearonly }}"
 ```
