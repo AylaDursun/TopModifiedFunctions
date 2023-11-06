@@ -36,10 +36,5 @@ runs:
       shell: bash
 
     - name: Find frequently modified functions
-      run:
-        if ${{ inputs.lastyearonly }}; then
-          python "${{ github.action_path }}/get_freq_modified_fns.py" --path . --topn ${{ inputs.topn }} --mainbranch ${{ inputs.mainbranch }} --lastyearonly >> $GITHUB_STEP_SUMMARY
-        else 
-          python "${{ github.action_path }}/get_freq_modified_fns.py" --path . --topn ${{ inputs.topn }} --mainbranch ${{ inputs.mainbranch }} >> $GITHUB_STEP_SUMMARY
-        fi
+      run: python "${{ github.action_path }}/get_freq_modified_fns.py" --path . --topn ${{ inputs.topn }} --mainbranch ${{ inputs.mainbranch }} ${{ inputs.lastyearonly == 'true' && '--lastyearonly' || '' }} >> $GITHUB_STEP_SUMMARY
       shell: bash
