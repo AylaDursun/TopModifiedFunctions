@@ -19,7 +19,7 @@ Top 10 modified functions:
 ## Usage Overview
 
 ```
-- uses: snadi/TopModifiedFunctions@v1.1
+- uses: snadi/TopModifiedFunctions@v1.2
   with:
     # top n functions to display (default 10)
     topn:
