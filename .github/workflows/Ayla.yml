@@ -1,0 +1,40 @@
+name: Find most frequently modified functions
+author: Sarah Nadi
+description: Display the most frequently modified functions, which can provide insights to prioritize testing and refactoring efforts.
+
+branding:
+  icon: info
+  color: yellow
+
+inputs:
+  topn:
+    description: "The number of top frequently modified functions to return"
+    type: number
+    default: 10
+  mainbranch:
+    description: "The name of the main branch"
+    type: string
+    default: "main"
+  lastyearonly: 
+    description: "Flag to indicate whether to only consider commits from the last year"
+    type: boolean
+    default: true
+
+runs:
+  using: "composite"
+  steps:
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: pip install -r "${{ github.action_path }}/requirements.txt"
+      shell: bash
+
+    - name: Find frequently modified functions
+      run: python "${{ github.action_path }}/get_freq_modified_fns.py" --path . --topn ${{ inputs.topn }} --mainbranch ${{ inputs.mainbranch }} ${{ inputs.lastyearonly == 'true' && '--lastyearonly' || '' }} >> $GITHUB_STEP_SUMMARY
+      shell: bash
