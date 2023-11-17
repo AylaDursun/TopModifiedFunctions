@@ -71,7 +71,7 @@ on:
       mainbranch:
         description: "The name of the branch to analyze"
         type: string
-        default: "master"
+        default: "main"
       lastyearonly:
         description: "Disable if you want to analyze the full history (takes longer)"
         type: boolean
