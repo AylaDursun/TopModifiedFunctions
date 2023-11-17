@@ -24,4 +24,4 @@ jobs:
         with:
           topn: 10
           mainbranch: main
-          lastyearonly: true
+          lastyearonly: false
